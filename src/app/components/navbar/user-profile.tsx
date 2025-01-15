@@ -1,4 +1,3 @@
-import {Button} from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,9 +7,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-// import {signOut} from "next-auth/react";
-import {ChevronsDown, LogOut} from "lucide-react";
+import {signOut} from "next-auth/react";
+import {LogOut} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {log} from "node:util";
 
 type UserProfileProps = {
     userName: string;
@@ -18,13 +18,14 @@ type UserProfileProps = {
     userAvatar?: string;
 }
 
-function signOut() {
+function logOut() {
     console.log("Signing out");
+    signOut().then(r => console.log(r));
 }
 
 export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps) {
-    const firstName = userName.split(" ")[0];
-    let userAvatarFallback = "AM";
+    const userAvatarFallback = "AM";
+    // console.log("User Avatar: ", userAvatar);
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -44,7 +45,7 @@ export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps)
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                         <Avatar className="h-8 w-8 rounded-lg">
                             <AvatarImage src={userAvatar} alt={userName}/>
-                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                            <AvatarFallback className="rounded-lg">{userAvatarFallback}</AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">Hi, {userName}</span>
@@ -62,7 +63,7 @@ export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps)
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={() => logOut()}>
                     <LogOut/>Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>

@@ -69,7 +69,7 @@ const ServicesSection = () => {
                                 <br/>
                                 <hr className="border-gray-300 mb-3"/>
                                 <p className="text-sm text-gray-300 mt-2 min-h-[50px]">{service.about}</p>
-                                <SubscriptionModal/>
+                                <SubscriptionModal serviceTitle={service.title}/>
                             </div>
                         </div>
                     ))}

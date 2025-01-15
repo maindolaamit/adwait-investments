@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {
     Dialog,
     DialogContent,
-    DialogDescription, DialogFooter,
+    DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -10,13 +11,22 @@ import {
 import {Button} from "@/components/ui/button";
 import {useToast} from "@/hooks/use-toast";
 
-export const SubscriptionModal = ({openModal: boolean}) => {
-    const [formData, setFormData] = useState({name: "", email: "", phone: ""});
+type SubscriptionModalProps = {
+    // openModal: boolean;
+    serviceTitle: string;
+}
+export const SubscriptionModal = ({serviceTitle}: SubscriptionModalProps) => {
+    const [formData, setFormData] = useState({name: "", email: "", phone: "", service: serviceTitle});
     const [errors, setErrors] = useState({name: "", email: "", phone: ""});
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const {toast} = useToast()
 
+    const resetForm = () => {
+        setFormData({name: "", email: "", phone: "", service: ""});
+        setErrors({name: "", email: "", phone: ""});
+        setIsLoading(false);
+    }
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
@@ -52,18 +62,44 @@ export const SubscriptionModal = ({openModal: boolean}) => {
         return valid;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validate()) {
+            // sent the email
+            try {
+                const response = await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    // show success message
+                    toast({
+                        title: "Subscription request sent",
+                        description: "Thank you for showing interest in our services. One of our team members will reach out to you shortly.",
+                    });
+                    // reset form
+                    resetForm();
+                } else {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: "There was an error submitting your request. Please try again later.",
+                    });
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was an error submitting your request. Please try again later.",
+                });
+            }
             // close modal
             setIsOpen(false);
-            toast({
-                title: "Subscription request sent",
-                description: "Thank you for showing interest in our services. One of our team members will reach out to you shortly.",
-                // action: (
-                //     <ToastAction altText="Ok">Ok</ToastAction>
-                // ),
-            })
         }
 
         setIsLoading(false);
