@@ -6,15 +6,16 @@ import ServicesSection from "@/app/components/home/services-section";
 const HomePage = () => {
   return (
       <>
-        <MissionSection/>
-        <hr className="border-gray-300"/>
-        <VisionSection/>
-        <ServicesSection/>
-        <TeamSection/>
+          <MissionSection/>
+          <hr className="border-gray-300"/>
+          <VisionSection/>
+          <hr className="border-gray-300"/>
+          <ServicesSection/>
+          <TeamSection/>
       </>);
 }
 export default function Home() {
-  return (
+    return (
       <HomePage/>
   );
 }

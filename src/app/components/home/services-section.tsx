@@ -45,8 +45,7 @@ const ServicesSection = () => {
     return (
         <section id="services" className="bg-gray-100 bg-gradient-to-r from-blue-500 to-green-500 py-20 text-white">
             <div className="container mx-auto text-center">
-                <h2 className="text-3xl font-bold mb-8">Our Services</h2>
-                <hr className="border-gray-300 my-8"/>
+                <h2 className="text-3xl font-bold mb-8 border-b-2 border-white inline-block">Our Services</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {servicesContent.services.map((service, index) => (
                         <div key={`service-${index}`} className="relative bg-gray-700 shadow-lg rounded-lg p-6"
