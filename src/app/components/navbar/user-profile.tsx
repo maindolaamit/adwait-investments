@@ -11,7 +11,7 @@ import {
 import {signOut} from "next-auth/react";
 import {LogOut} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {readDetailsFromLocalStorage} from "@/app/api/get-user-data/route";
+import {readUserDataFromLocalStorage} from "@/app/api/get-user-data/route";
 
 type UserProfileProps = {
     userName: string;
@@ -37,15 +37,13 @@ export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps)
             // } else {
             //     console.error('Error fetching user details:', response.json());
             // }
-            const data = readDetailsFromLocalStorage()
+            // const data = readUserDataFromLocalStorage
         } catch (error) {
             console.error('Error fetching user details:', error);
         }
     }
 
     useEffect(() => {
-
-
         fetchUserDetails();
     }, [userEmail]);
 

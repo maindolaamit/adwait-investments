@@ -10,20 +10,25 @@ import {
 } from "@/components/ui/dialog"
 import {Button} from "@/components/ui/button";
 import {useToast} from "@/hooks/use-toast";
+import {SubscriptionFormData} from "@/app/api/subscribe-user/route";
 
 type SubscriptionModalProps = {
-    // openModal: boolean;
     serviceTitle: string;
 }
 export const SubscriptionModal = ({serviceTitle}: SubscriptionModalProps) => {
-    const [formData, setFormData] = useState({name: "", email: "", phone: "", service: serviceTitle});
+    const [formData, setFormData] = useState<SubscriptionFormData>({
+        name: "",
+        email: "",
+        phone: "",
+        serviceType: serviceTitle
+    });
     const [errors, setErrors] = useState({name: "", email: "", phone: ""});
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const {toast} = useToast()
 
     const resetForm = () => {
-        setFormData({name: "", email: "", phone: "", service: ""});
+        setFormData({name: "", email: "", phone: "", serviceType: ""});
         setErrors({name: "", email: "", phone: ""});
         setIsLoading(false);
     }
@@ -64,40 +69,36 @@ export const SubscriptionModal = ({serviceTitle}: SubscriptionModalProps) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
+        if (validate() && serviceTitle && serviceTitle.length > 0) {
+            setFormData({...formData, serviceType: serviceTitle});
+            console.log('Submitting form for service :', formData.serviceType);
             // sent the email
-            try {
-                const response = await fetch('/api/subscribe-user', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                if (response.ok) {
-                    // show success message
+            await fetch('/api/subscribe-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            }).then(
+                (res) => {
+                    // show a success message
                     toast({
                         title: "Subscription request sent",
                         description: "Thank you for showing interest in our services. One of our team members will reach out to you shortly.",
                     });
                     // reset form
                     resetForm();
-                } else {
+                }
+            ).catch((error) => {
+                    console.error('Error submitting form:', error);
                     toast({
                         variant: "destructive",
                         title: "Uh oh! Something went wrong.",
                         description: "There was an error submitting your request. Please try again later.",
                     });
                 }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description: "There was an error submitting your request. Please try again later.",
-                });
-            }
+            );
+
             // close modal
             setIsOpen(false);
         }

@@ -8,8 +8,6 @@ type EmailRequestData = {
 };
 
 export default async function sendMail(subscriptionFormData: EmailRequestData) {
-
-    console.log('Request body:', subscriptionFormData);
     const {toEmail, fromEmail, subject, message} = subscriptionFormData;
 
     // Create a transporter object using Nodemailer
