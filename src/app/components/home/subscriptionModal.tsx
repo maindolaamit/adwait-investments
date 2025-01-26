@@ -67,7 +67,7 @@ export const SubscriptionModal = ({serviceTitle}: SubscriptionModalProps) => {
         if (validate()) {
             // sent the email
             try {
-                const response = await fetch('/api/send-email', {
+                const response = await fetch('/api/subscribe-user', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

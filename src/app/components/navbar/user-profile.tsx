@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -6,11 +7,11 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {signOut} from "next-auth/react";
 import {LogOut} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {log} from "node:util";
+import {readDetailsFromLocalStorage} from "@/app/api/get-user-data/route";
 
 type UserProfileProps = {
     userName: string;
@@ -24,8 +25,30 @@ function logOut() {
 }
 
 export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps) {
+    const [userDetails, setUserDetails] = useState(null);
     const userAvatarFallback = "AM";
-    // console.log("User Avatar: ", userAvatar);
+
+    async function fetchUserDetails() {
+        try {
+            // const response = await fetch(`/api/get-user-data?email=${userEmail}`);
+            // if (response.ok) {
+            //     const data = await response.json();
+            //     setUserDetails(data.data);
+            // } else {
+            //     console.error('Error fetching user details:', response.json());
+            // }
+            const data = readDetailsFromLocalStorage()
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+        }
+    }
+
+    useEffect(() => {
+
+
+        fetchUserDetails();
+    }, [userEmail]);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -68,5 +91,5 @@ export function UserProfile({userName, userEmail, userAvatar}: UserProfileProps)
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }

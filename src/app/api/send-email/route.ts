@@ -13,10 +13,14 @@ export default async function POST(request: Request) {
     console.log('Request body:', request.body);
     try {
         const formData: SubscriptionFormData = await request.json();
+        const toEmail = process.env.ADWAIT_TEAM_EMAIL_ID;
 
         // Create a transporter object using Nodemailer
         const transporter = nodemailer.createTransport({
             service: 'gmail', // Or your email service
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
             auth: {
                 user: process.env.EMAIL_USER, // Your email address
                 pass: process.env.EMAIL_PASSWORD, // Your email password or app password
@@ -26,7 +30,7 @@ export default async function POST(request: Request) {
         // Email options
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            to: "maindola.amit@gmail.com", // Send to the user who submitted the form
+            to: toEmail, // Send to the user who submitted the form
             subject: `I want to subscribe to your ${formData.serviceType}`,
             html: `
           <h1>Thank you for contacting us!!</h1>
